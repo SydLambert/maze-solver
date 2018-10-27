@@ -1,0 +1,34 @@
+*{
+	padding: 0px;
+	margin: 0px;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+	background-color: #C8ADFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#canvasContainer{
+	width: 100vw;
+	height: 100vh;
+	max-width: 133.3vh;
+	max-height: 75vw;
+	margin: 0px auto 0px auto;
+	display: block;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+canvas{
+	width: 80%;
+	height: 80%;
+	background-color: #FFFFFF;
+	image-rendering: pixelated;
+}
