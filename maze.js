@@ -31,7 +31,8 @@ class Grid{
 				Math.ceil(cellWidth-padding),
 				Math.ceil(cellHeight-padding)
 			);
-
+		});
+		this.cells.flat().forEach(cell=>{
 			cell.links.forEach(link=>{
 				ctx.strokeStyle="#00FF00";
 				ctx.beginPath();
