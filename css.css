@@ -4,9 +4,12 @@
 	font-family: 'Commodore', monospace;
 }
 
-body{
+html,body{
 	width: 100%;
 	height: 100%;
+}
+
+body{
 	background-color: #C8ADFF;
 	display: flex;
 	align-items: center;
