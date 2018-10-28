@@ -1,5 +1,5 @@
 class Grid{
-	constructor(width=3, height=3){
+	constructor(width=4, height=3){
 		this.width=width;
 		this.height=height;
 

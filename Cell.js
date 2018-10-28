@@ -16,16 +16,17 @@ class Cell{
 
 	getAdjacent(){
 		return [
-			this.x>0 					? this.grid.cells[this.x-1][this.y] : null,
-			this.y>0 					? this.grid.cells[this.x][this.y-1] : null,
-			this.x+1<this.grid.width	? this.grid.cells[this.x+1][this.y] : null,
-			this.y+1<this.grid.height 	? this.grid.cells[this.x][this.y+1] : null,
+			this.x>0 ? this.grid.cells[this.x-1][this.y] : null,
+			this.y>0 ? this.grid.cells[this.x][this.y-1] : null,
+			this.x+1<this.grid.width ? this.grid.cells[this.x+1][this.y] : null,
+			this.y+1<this.grid.height ? this.grid.cells[this.x][this.y+1] : null,
 		].filter(e=>e);
 	}
 
 	distanceTo(x, y){
 		if(x instanceof Cell){
-			return this.distanceTo(x.x,x.y);
+			let cell=x;
+			return this.distanceTo(cell.x,cell.y);
 		}
 		else{
 			return Math.abs(this.x-x)+Math.abs(this.y-y);
