@@ -27,7 +27,7 @@ class Grid{
 
 		this.cells.flat().forEach(cell=>{
 			cell.links.forEach(link=>{
-				ctx.strokeStyle=color;
+				ctx.strokeStyle=cell.mapped ? "gold" : color;
 				ctx.lineWidth=cellWidth*0.5;
 				ctx.beginPath();
 				ctx.moveTo(
@@ -45,7 +45,7 @@ class Grid{
 		this.cells.flat().filter(e=>
 			((!curvy&&e.visited)||e.color) || (curvy&&e.color)
 		).forEach(cell=>{
-			ctx.fillStyle=cell.color||color;
+			ctx.fillStyle=cell.color || (cell.mapped ? "gold" : color);
 			ctx.fillRect(
 				Math.ceil(cell.x*cellWidth+(cellWidth/4)),
 				Math.ceil(cell.y*cellHeight+(cellHeight/4)),
@@ -95,13 +95,17 @@ class Grid{
 		}
 	}
 
-	solveMaze(){
+	async solveMaze(ctx,delay=1){
 		let nodes=[this.cells[0][0]];
 		let end=this.cells[this.width-1][this.height-1];
 		nodes[0].globalGoal=this.width+this.height-2;
 		nodes[0].localGoal=0;
 		end.mapped=true;
 		while(nodes.length){
+			if(ctx && delay>0){
+				this.render(ctx);
+				await new Promise(resolve=>setTimeout(()=>resolve(),delay));
+			}
 			let current=nodes[0];
 			if(!current.mapped){
 				current.links.forEach(child=>{
@@ -162,9 +166,9 @@ const elems=[
 const ctx=elems.canvas.getContext("2d");
 
 let grid;
-//grid=new Grid(160,120);
+grid=new Grid(160,120);
 //grid=new Grid(64,48);
-grid=new Grid(32,24);
+//grid=new Grid(32,24);
 //grid=new Grid(16,12);
 //grid=new Grid(8,6);
 //grid=new Grid(4,3);
