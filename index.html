@@ -5,14 +5,33 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="author" content="Syd Lambert" />
 
+		<link rel="stylesheet" href="fonts.css">
 		<link rel="stylesheet" href="maze.css">
 	</head>
 	<body>
 		<div id="canvasContainer">
 			<canvas width="640" height="480"></canvas>
-			<div id="controls"></div>
+			<div id="controls">
+				<select id="gridSize">
+					<option value="8*6">8*6</option>
+					<option value="16*12">16*12</option>
+					<option value="32*24" selected>32*24</option>
+					<option value="64*48">64*48</option>
+					<option value="96*72">96*72</option>
+				</select>
+				<input id="generate" type="button" value="Generate" />
+				<select id="algorithm">
+					<option value="A*" selected>A*</option>
+					<option value="A*Greedy">A* (greedy)</option>
+					<option value="Dijkstra">Dijkstra</option>
+				</select>
+				<input id="solve" type="button" value="Solve" />
+				<input id="stop" type="button" value="Stop" />
+			</div>
 		</div>
 
-		<script src="maze.js"></script>
+		<script src="Cell.js"></script>
+		<script src="Grid.js"></script>
+		<script src="index.js"></script>
 	</body>
 </html>

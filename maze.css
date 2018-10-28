@@ -1,6 +1,7 @@
 *{
 	padding: 0px;
 	margin: 0px;
+	font-family: 'Commodore', monospace;
 }
 
 body{
@@ -31,4 +32,27 @@ canvas{
 	height: 80%;
 	background-color: #FFFFFF;
 	image-rendering: pixelated;
+}
+
+#controls{
+	width: 80%;
+	text-align: center;
+	margin-top: 1vh;
+}
+
+input,select{
+	font-size: 3vh;
+	background-color: #FFFFFF;
+	border: 0px;
+	padding: 0.5vh 0.25vw;
+	margin: 0.5vh 0.25vw;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+input:hover,select:hover{
+	background-color: #EEEEEE;
+}
+input:disabled,select:disabled{
+	background-color: #EEEEEE;
+	cursor: auto;
 }

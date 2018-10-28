@@ -10,13 +10,15 @@ class Grid{
 				this.cells[x].push(new Cell(this,x,y));
 			}
 		}
-		this.cells[0][0].color="#FF0000";
-		this.cells[this.width-1][this.height-1].color="#00FF00";
 	}
 
 	render(ctx,{
 		color="#000000",
 		backgroundColor="#FFFFFF",
+		startColor="#FF7777",
+		endColor="#AAFF66",
+		mappedColor="#FFD700",
+		pathColor="#FF00FF",
 		curvy=false
 	}={}){
 		ctx.fillStyle=backgroundColor;
@@ -27,7 +29,7 @@ class Grid{
 
 		this.cells.flat().forEach(cell=>{
 			cell.links.forEach(link=>{
-				ctx.strokeStyle=cell.mapped ? "gold" : color;
+				ctx.strokeStyle=cell.mapped ? mappedColor : color;
 				ctx.lineWidth=cellWidth*0.5;
 				ctx.beginPath();
 				ctx.moveTo(
@@ -45,7 +47,9 @@ class Grid{
 		this.cells.flat().filter(e=>
 			((!curvy&&e.visited)||e.color) || (curvy&&e.color)
 		).forEach(cell=>{
-			ctx.fillStyle=cell.color || (cell.mapped ? "gold" : color);
+			ctx.fillStyle=cell.color || (cell.mapped ? mappedColor : color);
+			if(!cell.distanceTo(0,0)) ctx.fillStyle=startColor;
+			if(!cell.distanceTo(this.width-1, this.height-1)) ctx.fillStyle=endColor;
 			ctx.fillRect(
 				Math.ceil(cell.x*cellWidth+(cellWidth/4)),
 				Math.ceil(cell.y*cellHeight+(cellHeight/4)),
@@ -54,40 +58,40 @@ class Grid{
 			);
 		});
 
-		ctx.strokeStyle="magenta";
+		ctx.strokeStyle=pathColor;
 		ctx.lineWidth=cellWidth*0.25;
 		ctx.beginPath();
 		ctx.moveTo(
 			Math.ceil(((this.width-1)*cellWidth)+cellWidth/2),
 			Math.ceil(((this.height-1)*cellHeight)+cellHeight/2)
 		);
-		let lineParent=child=>{
-			if(child.parent!=null){
-				ctx.lineTo(
-					Math.ceil((child.parent.x*cellWidth)+cellWidth/2),
-					Math.ceil((child.parent.y*cellHeight)+cellHeight/2)
-				);
-				lineParent(child.parent);
-			}
-		}
-		lineParent(this.cells[this.width-1][this.height-1]);
+
+		this.cells[this.width-1][this.height-1].lineParents(ctx, cellWidth, cellHeight);
 		ctx.stroke();
 	}
 
 	async generateMaze(ctx,delay=1){
+		if(ctx && delay>0) stop=false;
+
 		let stack=[this.cells[0][0]];
 		while(stack.length){
 			let top=stack[stack.length-1];
 			top.visited=true;
+			if(ctx && delay>0){
+				top.mapped=true;
+				this.render(ctx);
+				top.mapped=false;
+				await new Promise(resolve=>setTimeout(()=>resolve(),delay));
+				if(stop){
+					stop=false;
+					return;
+				}
+			}
 			let adjacent=top.getAdjacent().filter(e=>!e.visited);
 			if(adjacent.length){
 				let link=adjacent[Math.floor(Math.random()*adjacent.length)];
 				top.links.push(link);
 				stack.push(link);
-				if(ctx && delay>0){
-					this.render(ctx);
-					await new Promise(resolve=>setTimeout(()=>resolve(),delay));
-				}
 			}
 			else{
 				stack.pop();
@@ -95,17 +99,18 @@ class Grid{
 		}
 	}
 
-	async solveMaze(ctx,delay=1){
+	async solveMaze(ctx,{
+		delay=1,
+		greedy=false,
+		heuristic=true,
+	}={}){
+		if(ctx && delay>0) stop=false;
+
 		let nodes=[this.cells[0][0]];
 		let end=this.cells[this.width-1][this.height-1];
 		nodes[0].globalGoal=this.width+this.height-2;
 		nodes[0].localGoal=0;
-		end.mapped=true;
-		while(nodes.length){
-			if(ctx && delay>0){
-				this.render(ctx);
-				await new Promise(resolve=>setTimeout(()=>resolve(),delay));
-			}
+		while((greedy && nodes.length) || (nodes.length && !end.mapped)){
 			let current=nodes[0];
 			if(!current.mapped){
 				current.links.forEach(child=>{
@@ -114,63 +119,20 @@ class Grid{
 						child.parent=current;
 						child.localGoal=current.localGoal+1;
 					}
-					child.globalGoal=child.localGoal+child.distanceTo(end); //heuristic is distanceto
+					child.globalGoal=child.localGoal+(heuristic ? child.distanceTo(end) : 1);
 				});
 				current.mapped=true;
 			}
 			nodes.splice(0,1);
 			nodes.sort((a,b)=>a.globalGoal-b.globalGoal);
+			if(ctx && delay>0){
+				this.render(ctx);
+				await new Promise(resolve=>setTimeout(()=>resolve(),delay));
+				if(stop){
+					stop=false;
+					return;
+				}
+			}
 		}
 	}
 }
-
-class Cell{
-	constructor(grid, x, y){
-		this.grid=grid;
-		this.x=x;
-		this.y=y;
-		this.color=null;
-
-		this.links=[];
-		this.visited=false;
-
-		this.globalGoal=Infinity;
-		this.localGoal=Infinity;
-		this.parent=null;
-		this.mapped=false;
-	}
-
-	getAdjacent(){
-		return [
-			this.x>0 					? this.grid.cells[this.x-1][this.y] : null,
-			this.y>0 					? this.grid.cells[this.x][this.y-1] : null,
-			this.x+1<this.grid.width	? this.grid.cells[this.x+1][this.y] : null,
-			this.y+1<this.grid.height 	? this.grid.cells[this.x][this.y+1] : null,
-		].filter(e=>e);
-	}
-
-	distanceTo(x, y){
-		if(x instanceof Cell){
-			return this.distanceTo(x.x,x.y);
-		}
-		else{
-			return Math.abs(this.x-x)+Math.abs(this.y-y);
-		}
-	}
-}
-
-const elems=[
-	"canvas"
-].reduce((a,e)=>Object.assign(a,{[e]:document.querySelector(e)}),{});
-
-const ctx=elems.canvas.getContext("2d");
-
-let grid;
-grid=new Grid(160,120);
-//grid=new Grid(64,48);
-//grid=new Grid(32,24);
-//grid=new Grid(16,12);
-//grid=new Grid(8,6);
-//grid=new Grid(4,3);
-grid.generateMaze();
-grid.render(ctx);
