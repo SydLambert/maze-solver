@@ -15,9 +15,9 @@ class Grid{
 	}
 
 	render(ctx,{
-		padding=1,
 		color="#000000",
-		backgroundColor="#FFFFFF"
+		backgroundColor="#FFFFFF",
+		curvy=false
 	}={}){
 		ctx.fillStyle=backgroundColor;
 		ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -41,8 +41,10 @@ class Grid{
 				ctx.stroke();
 			});
 		});
-		this.cells.flat().filter(e=>e.color).forEach(cell=>{
-			ctx.fillStyle=cell.color;
+		this.cells.flat().filter(e=>
+			((!curvy&&e.visited)||e.color) || (curvy&&e.color)
+		).forEach(cell=>{
+			ctx.fillStyle=cell.color||color;
 			ctx.fillRect(
 				Math.ceil(cell.x*cellWidth+(cellWidth/4)),
 				Math.ceil(cell.y*cellHeight+(cellHeight/4)),
@@ -72,6 +74,14 @@ class Grid{
 			}
 		}
 	}
+
+	solveMaze(){
+		let nodes=[this.cells[0][0]];
+		nodes[0].globalGoal=this.width+this.height-2;
+		while(nodes.length){
+
+		}
+	}
 }
 
 class Cell{
@@ -83,6 +93,10 @@ class Cell{
 
 		this.links=[];
 		this.visited=false;
+
+		this.globalGoal=Math.Infinity;
+		this.localGoal=Math.Infinity;
+		this.parent=null;
 	}
 
 	getAdjacent(){
