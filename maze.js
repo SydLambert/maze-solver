@@ -41,6 +41,7 @@ class Grid{
 				ctx.stroke();
 			});
 		});
+
 		this.cells.flat().filter(e=>
 			((!curvy&&e.visited)||e.color) || (curvy&&e.color)
 		).forEach(cell=>{
@@ -52,6 +53,25 @@ class Grid{
 				Math.ceil(cellHeight/2)
 			);
 		});
+
+		ctx.strokeStyle="magenta";
+		ctx.lineWidth=cellWidth*0.25;
+		ctx.beginPath();
+		ctx.moveTo(
+			Math.ceil(((this.width-1)*cellWidth)+cellWidth/2),
+			Math.ceil(((this.height-1)*cellHeight)+cellHeight/2)
+		);
+		let lineParent=child=>{
+			if(child.parent!=null){
+				ctx.lineTo(
+					Math.ceil((child.parent.x*cellWidth)+cellWidth/2),
+					Math.ceil((child.parent.y*cellHeight)+cellHeight/2)
+				);
+				lineParent(child.parent);
+			}
+		}
+		lineParent(this.cells[this.width-1][this.height-1]);
+		ctx.stroke();
 	}
 
 	async generateMaze(ctx,delay=1){
@@ -77,9 +97,25 @@ class Grid{
 
 	solveMaze(){
 		let nodes=[this.cells[0][0]];
+		let end=this.cells[this.width-1][this.height-1];
 		nodes[0].globalGoal=this.width+this.height-2;
+		nodes[0].localGoal=0;
+		end.mapped=true;
 		while(nodes.length){
-
+			let current=nodes[0];
+			if(!current.mapped){
+				current.links.forEach(child=>{
+					nodes.push(child);
+					if(current.localGoal+1 < child.localGoal){
+						child.parent=current;
+						child.localGoal=current.localGoal+1;
+					}
+					child.globalGoal=child.localGoal+child.distanceTo(end); //heuristic is distanceto
+				});
+				current.mapped=true;
+			}
+			nodes.splice(0,1);
+			nodes.sort((a,b)=>a.globalGoal-b.globalGoal);
 		}
 	}
 }
@@ -94,9 +130,10 @@ class Cell{
 		this.links=[];
 		this.visited=false;
 
-		this.globalGoal=Math.Infinity;
-		this.localGoal=Math.Infinity;
+		this.globalGoal=Infinity;
+		this.localGoal=Infinity;
 		this.parent=null;
+		this.mapped=false;
 	}
 
 	getAdjacent(){
@@ -106,6 +143,15 @@ class Cell{
 			this.x+1<this.grid.width	? this.grid.cells[this.x+1][this.y] : null,
 			this.y+1<this.grid.height 	? this.grid.cells[this.x][this.y+1] : null,
 		].filter(e=>e);
+	}
+
+	distanceTo(x, y){
+		if(x instanceof Cell){
+			return this.distanceTo(x.x,x.y);
+		}
+		else{
+			return Math.abs(this.x-x)+Math.abs(this.y-y);
+		}
 	}
 }
 
@@ -121,5 +167,6 @@ let grid;
 grid=new Grid(32,24);
 //grid=new Grid(16,12);
 //grid=new Grid(8,6);
-grid.generateMaze(ctx);
+//grid=new Grid(4,3);
+grid.generateMaze();
 grid.render(ctx);
