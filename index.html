@@ -1,18 +1,24 @@
-<! DOCTYPE>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta http-equiv="content-type" content="text/html;charset=UTF8" />
+		<title>Maze Generator & Solver</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="author" content="Syd Lambert" />
+		<meta name="description" content="JavaScript maze generator & solver with multiple algorithms." />
+		<meta name="theme-color" content="#C8ADFF" />
 
-		<link rel="stylesheet" href="fonts.css">
-		<link rel="stylesheet" href="maze.css">
+		<link rel="stylesheet" href="fonts.css" />
+		<link rel="stylesheet" href="maze.css" />
+		<link rel="icon" type="image/png" href="favicon.png" />
 	</head>
 	<body>
 		<div id="canvasContainer">
 			<canvas width="640" height="480"></canvas>
 			<div id="controls">
-				<select id="gridSize">
+				<label for="gridSize">The width and height of the grid</label>
+				<select id="gridSize" name="gridSize">
 					<option value="8*6">8*6</option>
 					<option value="16*12">16*12</option>
 					<option value="32*24" selected>32*24</option>
@@ -20,7 +26,8 @@
 					<option value="96*72">96*72</option>
 				</select>
 				<input id="generate" type="button" value="Generate" />
-				<select id="algorithm">
+				<label for="algorithm">The algorithm that the solver will use</label>
+				<select id="algorithm" name="algorithm">
 					<option value="A*" selected>A*</option>
 					<option value="A*Greedy">A* (greedy)</option>
 					<option value="Dijkstra">Dijkstra</option>

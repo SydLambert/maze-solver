@@ -2,6 +2,7 @@
 	padding: 0px;
 	margin: 0px;
 	font-family: 'Commodore', monospace;
+	font-display: swap;
 }
 
 body{
@@ -55,4 +56,15 @@ input:hover,select:hover{
 input:disabled,select:disabled{
 	background-color: #EEEEEE;
 	cursor: auto;
+}
+
+label{
+	border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
 }
