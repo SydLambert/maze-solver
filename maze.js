@@ -10,49 +10,51 @@ class Grid{
 				this.cells[x].push(new Cell(this,x,y));
 			}
 		}
+		this.cells[0][0].color="#FF0000";
+		this.cells[this.width-1][this.height-1].color="#00FF00";
 	}
 
 	render(ctx,{
 		padding=1,
-		color="#FFFFFF",
-		backgroundColor="#000000"
+		color="#000000",
+		backgroundColor="#FFFFFF"
 	}={}){
 		ctx.fillStyle=backgroundColor;
 		ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
-		let cellWidth=(ctx.canvas.width-padding)/this.width;
-		let cellHeight=(ctx.canvas.height-padding)/this.height;
+		let cellWidth=ctx.canvas.width/this.width;
+		let cellHeight=ctx.canvas.height/this.height;
 
 		this.cells.flat().forEach(cell=>{
-			ctx.fillStyle=cell.color||color;
-			ctx.fillRect(
-				Math.ceil(cell.x*cellWidth+padding),
-				Math.ceil(cell.y*cellHeight+padding),
-				Math.ceil(cellWidth-padding),
-				Math.ceil(cellHeight-padding)
-			);
-		});
-		this.cells.flat().forEach(cell=>{
 			cell.links.forEach(link=>{
-				ctx.strokeStyle="#00FF00";
+				ctx.strokeStyle=color;
+				ctx.lineWidth=cellWidth*0.5;
 				ctx.beginPath();
 				ctx.moveTo(
-					Math.ceil((cell.x*cellWidth+padding)+cellWidth/2),
-					Math.ceil((cell.y*cellHeight+padding)+cellHeight/2)
+					Math.ceil((cell.x*cellWidth)+cellWidth/2),
+					Math.ceil((cell.y*cellHeight)+cellHeight/2)
 				);
 				ctx.lineTo(
-					Math.ceil((link.x*cellWidth+padding)+cellWidth/2),
-					Math.ceil((link.y*cellHeight+padding)+cellHeight/2)
+					Math.ceil((link.x*cellWidth)+cellWidth/2),
+					Math.ceil((link.y*cellHeight)+cellHeight/2)
 				);
 				ctx.stroke();
 			});
 		});
+		this.cells.flat().filter(e=>e.color).forEach(cell=>{
+			ctx.fillStyle=cell.color;
+			ctx.fillRect(
+				Math.ceil(cell.x*cellWidth+(cellWidth/4)),
+				Math.ceil(cell.y*cellHeight+(cellHeight/4)),
+				Math.ceil(cellWidth/2),
+				Math.ceil(cellHeight/2)
+			);
+		});
 	}
 
-	generateMaze(){
+	async generateMaze(ctx,delay=1){
 		let stack=[this.cells[0][0]];
 		while(stack.length){
-			console.log(stack);
 			let top=stack[stack.length-1];
 			top.visited=true;
 			let adjacent=top.getAdjacent().filter(e=>!e.visited);
@@ -60,6 +62,10 @@ class Grid{
 				let link=adjacent[Math.floor(Math.random()*adjacent.length)];
 				top.links.push(link);
 				stack.push(link);
+				if(ctx && delay>0){
+					this.render(ctx);
+					await new Promise(resolve=>setTimeout(()=>resolve(),delay));
+				}
 			}
 			else{
 				stack.pop();
@@ -96,8 +102,10 @@ const elems=[
 const ctx=elems.canvas.getContext("2d");
 
 let grid;
+//grid=new Grid(160,120);
 //grid=new Grid(64,48);
-//grid=new Grid(32,24);
+grid=new Grid(32,24);
 //grid=new Grid(16,12);
-grid=new Grid(8,6);
+//grid=new Grid(8,6);
+grid.generateMaze(ctx);
 grid.render(ctx);
