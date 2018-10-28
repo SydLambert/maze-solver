@@ -37,17 +37,21 @@ elem.generate.addEventListener("click",async e=>{
 });
 
 elem.solve.addEventListener("click",async e=>{
-	let gridSize=elem.gridSize.value.split("*");
-	enableInputs(false);
-	grid.cells.flat().forEach(cell=>{
-		cell.globalGoal=Infinity;
-		cell.localGoal=Infinity;
-		cell.parent=null;
-		cell.mapped=false;
-	});
-	await grid.solveMaze(gridSize[0]<=32 ? ctx : null,algorithms[elem.algorithm.value]);
-	grid.render(ctx);
-	enableInputs(true);
+	if(grid){
+		enableInputs(false);
+		grid.cells.flat().forEach(cell=>{
+			cell.globalGoal=Infinity;
+			cell.localGoal=Infinity;
+			cell.parent=null;
+			cell.mapped=false;
+		});
+		await grid.solveMaze(grid.width<=32 ? ctx : null,algorithms[elem.algorithm.value]);
+		grid.render(ctx);
+		enableInputs(true);
+	}
+	else{
+		alert("Please generate a maze first.");
+	}
 });
 
 elem.stop.addEventListener("click",e=>{
