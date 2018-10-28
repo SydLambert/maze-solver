@@ -10,7 +10,7 @@
 		<meta name="theme-color" content="#C8ADFF" />
 
 		<link rel="stylesheet" href="fonts.css" />
-		<link rel="stylesheet" href="maze.css" />
+		<link rel="stylesheet" href="css.css" />
 		<link rel="icon" type="image/png" href="favicon.png" />
 	</head>
 	<body>
@@ -19,11 +19,11 @@
 			<div id="controls">
 				<label for="gridSize">The width and height of the grid</label>
 				<select id="gridSize" name="gridSize">
-					<option value="8*6">8*6</option>
-					<option value="16*12">16*12</option>
-					<option value="32*24" selected>32*24</option>
-					<option value="64*48">64*48</option>
-					<option value="96*72">96*72</option>
+					<option>8*6</option>
+					<option>16*12</option>
+					<option selected>32*24</option>
+					<option>64*48</option>
+					<option>96*72</option>
 				</select>
 				<input id="generate" type="button" value="Generate" />
 				<label for="algorithm">The algorithm that the solver will use</label>
