@@ -15,7 +15,7 @@
 	</head>
 	<body>
 		<div id="canvasContainer">
-			<canvas width="640" height="480"></canvas>
+			<canvas width="1280" height="960"></canvas>
 			<div id="controls">
 				<label for="gridSize">The width and height of the grid</label>
 				<select id="gridSize" name="gridSize">
@@ -28,9 +28,9 @@
 				<input id="generate" type="button" value="Generate" />
 				<label for="algorithm">The algorithm that the solver will use</label>
 				<select id="algorithm" name="algorithm">
-					<option value="A*" selected>A*</option>
-					<option value="A*Greedy">A* (greedy)</option>
-					<option value="Dijkstra">Dijkstra</option>
+					<option selected>A*</option>
+					<option>A* (greedy)</option>
+					<option>Dijkstra</option>
 				</select>
 				<input id="solve" type="button" value="Solve" />
 				<input id="stop" type="button" value="Stop" />
