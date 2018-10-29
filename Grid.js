@@ -13,8 +13,8 @@ class Grid{
 	}
 
 	render(ctx,{
-		color="#000000",
-		backgroundColor="#FFFFFF",
+		color="#FFFFFF",
+		backgroundColor="#000000",
 		startColor="#FF7777",
 		endColor="#AAFF66",
 		mappedColor="#FFD700",
