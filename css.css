@@ -14,6 +14,7 @@ body{
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-direction: column;
 }
 
 #canvasContainer{
@@ -24,6 +25,7 @@ body{
 	margin: 0px auto 0px auto;
 	display: block;
 	box-sizing: border-box;
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -39,8 +41,10 @@ canvas{
 
 #controls{
 	width: 80%;
+	height: 7vh;
 	text-align: center;
 	margin-top: 1vh;
+	overflow: visible;
 }
 
 input,select{
@@ -69,4 +73,34 @@ label{
     padding: 0;
     position: absolute;
     width: 1px;
+}
+
+#canvasOverlay{
+	position: absolute;
+	width: 80%;
+	height: 80%;
+	margin-bottom: 8vh;
+	padding-top: 3.4vh;
+	padding-left: 2.69vh;
+	font-size: 3.4vh;
+	box-sizing: border-box;
+	text-transform: uppercase;
+}
+
+#canvasOverlay::after{
+	content: "■";
+	animation: caret 1s steps(2, start) infinite;
+}
+@keyframes caret{
+	to{
+		visibility: hidden;
+	}
+}
+
+@media screen and (max-aspect-ratio: 4/3) {
+	#canvasOverlay{
+		font-size: 2.55vw;
+		padding-top: 2.55vw;
+		padding-left: 1.77vw;
+	}
 }

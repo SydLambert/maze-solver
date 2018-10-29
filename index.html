@@ -6,8 +6,9 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="author" content="Syd Lambert" />
-		<meta name="description" content="JavaScript maze generator & solver with multiple algorithms." />
+		<meta name="description" content="JavaScript maze generator & solver with multiple algorithms. sydlambert.com" />
 		<meta name="theme-color" content="#C8ADFF" />
+		<meta name="og:image" content="https://sydlambert.com/maze/favicon.png" />
 
 		<link rel="stylesheet" href="fonts.css" />
 		<link rel="stylesheet" href="css.css" />
@@ -16,6 +17,11 @@
 	<body>
 		<div id="canvasContainer">
 			<canvas width="1280" height="960"></canvas>
+			<div id="canvasOverlay">
+				&nbsp;Syd's maze generator/solver program<br />
+				&nbsp;Press generate to start<br /><br />
+				Ready.<br />
+			</div>
 			<div id="controls">
 				<label for="gridSize">The width and height of the grid</label>
 				<select id="gridSize" name="gridSize">

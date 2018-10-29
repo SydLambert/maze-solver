@@ -28,6 +28,7 @@ const elem=[
 	"#algorithm", //The select element where the user specifies the algorithm for the maze solver
 	"#solve", //The button that starts the maze solver
 	"#stop", //The button the stops both the generator and solver
+	"#canvasOverlay" //The introduction text on top of the canvas
 ].reduce((a,e)=>
 	Object.assign(a,{[e.replace(/\W/,"")]:document.querySelector(e)}
 ),{});
@@ -89,6 +90,7 @@ const enableInputs=enabled=>[
 	suspend the function's execution while the maze generation completes.
 */
 elem.generate.addEventListener("click",async e=>{
+	elem.canvasOverlay.style.display="none";
 	let gridSize=elem.gridSize.value.split("*");
 	grid=new Grid(gridSize[0], gridSize[1]);
 	enableInputs(false);
@@ -136,7 +138,9 @@ elem.solve.addEventListener("click",async e=>{
 		enableInputs(true);
 	}
 	else{
-		alert("Please generate a maze first.");
+		if(!elem.canvasOverlay.innerHTML.includes("?")){
+			elem.canvasOverlay.innerHTML+="<br />?Please generate a maze first<br />Ready.<br />"
+		}
 	}
 });
 
