@@ -58,18 +58,30 @@ const algorithms={
 */
 const ctx=elem.canvas.getContext("2d");
 
+/*
+	The main render function. Draws a visual representation of the given Grid object to the 2D
+	rendering context. The options argument adjusts the aesthetics of the diagram.
+*/
 const render=(grid, ctx,{
-	color="#FFFFFF",
-	backgroundColor="#000000",
-	startColor="#FF7777",
-	endColor="#AAFF66",
-	mappedColor="#FFD700",
-	pathColor="#FF00FF",
-	curvy=false
+	color="#FFFFFF", //The foreground color of the main maze
+	backgroundColor="#000000", //The color of the maze walls
+	startColor="#FF7777", //The color of the starting cell (top left)
+	endColor="#AAFF66", //The color of the ending cell (bottom right)
+	mappedColor="#FFD700", //The color that indicates a cell has been visited by an algorithm
+	pathColor="#FF00FF", //The color of the final solution path line
+	curvy=false //Boolean flag determining whether or not the maze path should have rounded edges
 }={})=>{
+	/*
+		Draws a background layer covering the whole canvas, this both adds a background color and
+		fills over any previous paints to the canvas.
+	*/
 	ctx.fillStyle=backgroundColor;
 	ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
+	/*
+		The cell width and height are such that all the cells in the Grid object will render to fit
+		the whole canvas exactly when tiled.
+	*/
 	let cellWidth=ctx.canvas.width/grid.width;
 	let cellHeight=ctx.canvas.height/grid.height;
 

@@ -37,7 +37,7 @@ class Cell{
 	}
 
 	/*
-		Returns the manhattan distance to a given location on the grid. I wanted a function that
+		Returns the Manhattan distance to a given location on the grid. I wanted a function that
 		could handle either coordinates or a Cell object as arguments, but there is no overloading
 		in Javascript so the function just switches behaviour depending on whether the first
 		argument is an instance of the Cell class, such that the following code works:
@@ -63,11 +63,23 @@ class Cell{
 		called.
 	*/
 	lineParents(ctx, cellWidth, cellHeight){
+		/*
+			Checks to ensure this cell isn't the first cell in the maze. The starting cell can never
+			have a parent, so the algorithm stops here.
+		*/
 		if(this.parent!=null){
+			/*
+				Draws a line from the center of this cell to the center of the parent cell.
+			*/
 			ctx.lineTo(
 				Math.ceil((this.parent.x*cellWidth)+cellWidth/2),
 				Math.ceil((this.parent.y*cellHeight)+cellHeight/2)
 			);
+			/*
+				Calls this same method on the parent cell, with the same arguments. This creates the
+				recursive loop that draws a path through all parents that came before the current
+				cell.
+			*/
 			this.parent.lineParents(ctx, cellWidth, cellHeight);
 		}
 	}
