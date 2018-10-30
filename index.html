@@ -1,29 +1,51 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- The markup has no flaws according to the W3C validator. -->
 <html lang="en">
 	<head>
 		<title>Maze Generator & Solver</title>
-
+		<!-- Meta tags that describe the way browsers and search engines should handle the page -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!-- Variable viewport ensures that the page scales consistenty across screen sizes-->
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="author" content="Syd Lambert" />
 		<meta name="description" content="JavaScript maze generator & solver with multiple algorithms. sydlambert.com" />
 		<meta name="theme-color" content="#C8ADFF" />
+		<!-- og:image refers to the preview image for the page. It is part of http://ogp.me/ -->
 		<meta name="og:image" content="https://sydlambert.com/maze/favicon.png" />
 
+		<!-- Importing the stylesheets and favicon. The favicon displays in the browser tab -->
 		<link rel="stylesheet" href="fonts.css" />
 		<link rel="stylesheet" href="css.css" />
 		<link rel="icon" type="image/png" href="favicon.png" />
 	</head>
 	<body>
+		<!--
+			The canvas container spans the width and height of the page but always maintains a 4:3
+			aspect ratio, in order to ensure the canvas scales correctly when the window is
+			resized.
+		-->
 		<div id="canvasContainer">
+			<!-- The main canvas that all the graphics will be drawn to -->
 			<canvas width="1280" height="960"></canvas>
+			<!-- The overlay text to instruct the user and display an error message -->
 			<div id="canvasOverlay">
 				&nbsp;Syd's maze generator/solver program<br />
 				&nbsp;Press generate to start<br /><br />
 				Ready.<br />
 			</div>
+			<!--
+				The controls are how the user will interact with the maze generator and input data.
+				The input tags are bound to click events in Javascript. The label tags are for
+				screen readers, and are not actually visible to regular users. While this little app
+				is completely useless to someone with a screen reader, adding these makes Chrome
+				give a 100% accessibility score in Lighthouse.
+			-->
 			<div id="controls">
 				<label for="gridSize">The width and height of the grid</label>
+				<!--
+					The user can specify the width and height of the grid of cells. The generation
+					and solving animations are removed on grids larger than 32 cells wide to save
+					time.
+				-->
 				<select id="gridSize" name="gridSize">
 					<option>8*6</option>
 					<option>16*12</option>
@@ -31,20 +53,30 @@
 					<option>64*48</option>
 					<option>96*72</option>
 				</select>
-				<input id="generate" type="button" value="Generate" />
+				<input id="generate" type="button" value="Generate" /> <!-- Generates the maze -->
 				<label for="algorithm">The algorithm that the solver will use</label>
+				<!--
+					The user can select different algorithms to decide how the maze solver should
+					function.
+				-->
 				<select id="algorithm" name="algorithm">
 					<option selected>A*</option>
 					<option>A* (greedy)</option>
 					<option>Dijkstra</option>
 				</select>
+				 <!--
+				 	Starts the maze solver and displays the solution to the user.
+				-->
 				<input id="solve" type="button" value="Solve" />
+				<!--
+					Stops any currently running processes, be it the solver or generator.
+				-->
 				<input id="stop" type="button" value="Stop" />
 			</div>
 		</div>
 
-		<script src="Cell.js"></script>
-		<script src="Grid.js"></script>
-		<script src="index.js"></script>
+		<script src="Cell.js"></script> <!-- The Cell class representing each cell on the grid -->
+		<script src="Grid.js"></script> <!-- The Grid class representing a matrix of cells -->
+		<script src="index.js"></script> <!-- The main JS file for functionality and rendering -->
 	</body>
 </html>
