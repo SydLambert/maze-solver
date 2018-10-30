@@ -1,0 +1,11 @@
+/*
+	Credit to Devin Cook for the Commodore 64 font.
+	http://www.devincook.com/
+*/
+@font-face {
+  font-family: 'Commodore';
+  font-display: swap;
+  src: url('fonts/Commodore.woff2') format('woff2'),
+       url('fonts/Commodore.woff') format('woff'),
+       url('fonts/Commodore.ttf') format('truetype');
+}
