@@ -1,3 +1,7 @@
+/*
+	Grid is the main class in this program. It contains a multidimensional array of Cell objects and
+	the necessary methods for generating and solving mazes with these Cells.
+*/
 class Grid{
 	constructor(width=4, height=3){
 		this.width=width;
@@ -12,64 +16,6 @@ class Grid{
 		}
 	}
 
-	render(ctx,{
-		color="#FFFFFF",
-		backgroundColor="#000000",
-		startColor="#FF7777",
-		endColor="#AAFF66",
-		mappedColor="#FFD700",
-		pathColor="#FF00FF",
-		curvy=false
-	}={}){
-		ctx.fillStyle=backgroundColor;
-		ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
-
-		let cellWidth=ctx.canvas.width/this.width;
-		let cellHeight=ctx.canvas.height/this.height;
-
-		this.cells.flat().forEach(cell=>{
-			cell.links.forEach(link=>{
-				ctx.strokeStyle=cell.mapped ? mappedColor : color;
-				ctx.lineWidth=cellWidth*0.5;
-				ctx.beginPath();
-				ctx.moveTo(
-					Math.ceil((cell.x*cellWidth)+cellWidth/2),
-					Math.ceil((cell.y*cellHeight)+cellHeight/2)
-				);
-				ctx.lineTo(
-					Math.ceil((link.x*cellWidth)+cellWidth/2),
-					Math.ceil((link.y*cellHeight)+cellHeight/2)
-				);
-				ctx.stroke();
-			});
-		});
-
-		this.cells.flat().filter(e=>
-			((!curvy&&e.visited)||e.color) || (curvy&&e.color)
-		).forEach(cell=>{
-			ctx.fillStyle=cell.color || (cell.mapped ? mappedColor : color);
-			if(!cell.distanceTo(0,0)) ctx.fillStyle=startColor;
-			if(!cell.distanceTo(this.width-1, this.height-1)) ctx.fillStyle=endColor;
-			ctx.fillRect(
-				Math.ceil(cell.x*cellWidth+(cellWidth/4)),
-				Math.ceil(cell.y*cellHeight+(cellHeight/4)),
-				Math.ceil(cellWidth/2),
-				Math.ceil(cellHeight/2)
-			);
-		});
-
-		ctx.strokeStyle=pathColor;
-		ctx.lineWidth=cellWidth*0.25;
-		ctx.beginPath();
-		ctx.moveTo(
-			Math.ceil(((this.width-1)*cellWidth)+cellWidth/2),
-			Math.ceil(((this.height-1)*cellHeight)+cellHeight/2)
-		);
-
-		this.cells[this.width-1][this.height-1].lineParents(ctx, cellWidth, cellHeight);
-		ctx.stroke();
-	}
-
 	async generateMaze(ctx,delay=1){
 		if(ctx && delay>0) stop=false;
 
@@ -79,7 +25,7 @@ class Grid{
 			top.visited=true;
 			if(ctx && delay>0){
 				top.mapped=true;
-				this.render(ctx);
+				render(this, ctx);
 				top.mapped=false;
 				await new Promise(resolve=>setTimeout(()=>resolve(),delay));
 				if(stop){
@@ -126,7 +72,7 @@ class Grid{
 			nodes.splice(0,1);
 			nodes.sort((a,b)=>a.globalGoal-b.globalGoal);
 			if(ctx && delay>0){
-				this.render(ctx);
+				render(this, ctx);
 				await new Promise(resolve=>setTimeout(()=>resolve(),delay));
 				if(stop){
 					stop=false;

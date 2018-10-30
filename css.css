@@ -88,7 +88,12 @@ label{
 }
 
 #canvasOverlay::after{
-	content: "■";
+	content: "";
+	background-color: #000000;
+	width: 2.4vh;
+	height: 2.4vh;
+	margin-top: 0.6vh;
+	display: block;
 	animation: caret 1s steps(2, start) infinite;
 }
 @keyframes caret{
@@ -102,5 +107,10 @@ label{
 		font-size: 2.55vw;
 		padding-top: 2.55vw;
 		padding-left: 1.77vw;
+	}
+	#canvasOverlay::after{
+		width: 1.8vw;
+		height: 1.8vw;
+		margin-top: 0.4vw;
 	}
 }

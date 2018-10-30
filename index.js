@@ -58,6 +58,64 @@ const algorithms={
 */
 const ctx=elem.canvas.getContext("2d");
 
+const render=(grid, ctx,{
+	color="#FFFFFF",
+	backgroundColor="#000000",
+	startColor="#FF7777",
+	endColor="#AAFF66",
+	mappedColor="#FFD700",
+	pathColor="#FF00FF",
+	curvy=false
+}={})=>{
+	ctx.fillStyle=backgroundColor;
+	ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
+	let cellWidth=ctx.canvas.width/grid.width;
+	let cellHeight=ctx.canvas.height/grid.height;
+
+	grid.cells.flat().forEach(cell=>{
+		cell.links.forEach(link=>{
+			ctx.strokeStyle=cell.mapped ? mappedColor : color;
+			ctx.lineWidth=cellWidth*0.5;
+			ctx.beginPath();
+			ctx.moveTo(
+				Math.ceil((cell.x*cellWidth)+cellWidth/2),
+				Math.ceil((cell.y*cellHeight)+cellHeight/2)
+			);
+			ctx.lineTo(
+				Math.ceil((link.x*cellWidth)+cellWidth/2),
+				Math.ceil((link.y*cellHeight)+cellHeight/2)
+			);
+			ctx.stroke();
+		});
+	});
+
+	grid.cells.flat().filter(e=>
+		((!curvy&&e.visited)||e.color) || (curvy&&e.color)
+	).forEach(cell=>{
+		ctx.fillStyle=cell.color || (cell.mapped ? mappedColor : color);
+		if(!cell.distanceTo(0,0)) ctx.fillStyle=startColor;
+		if(!cell.distanceTo(grid.width-1, grid.height-1)) ctx.fillStyle=endColor;
+		ctx.fillRect(
+			Math.ceil(cell.x*cellWidth+(cellWidth/4)),
+			Math.ceil(cell.y*cellHeight+(cellHeight/4)),
+			Math.ceil(cellWidth/2),
+			Math.ceil(cellHeight/2)
+		);
+	});
+
+	ctx.strokeStyle=pathColor;
+	ctx.lineWidth=cellWidth*0.25;
+	ctx.beginPath();
+	ctx.moveTo(
+		Math.ceil(((grid.width-1)*cellWidth)+cellWidth/2),
+		Math.ceil(((grid.height-1)*cellHeight)+cellHeight/2)
+	);
+
+	grid.cells[grid.width-1][grid.height-1].lineParents(ctx, cellWidth, cellHeight);
+	ctx.stroke();
+};
+
 /*
 	'grid' will hold the instance of the Grid class that the user will be interacting with.
 	'stop' holds a boolean flag to end the execution of the asynchronous functions for maze
@@ -106,7 +164,7 @@ elem.generate.addEventListener("click",async e=>{
 		One final render to clear up any artefacts left by the maze generator. If animations were
 		disabled in the maze generator, this will be the first canvas update that the user will see.
 	*/
-	grid.render(ctx);
+	render(grid, ctx);
 	enableInputs(true);
 });
 
@@ -134,12 +192,12 @@ elem.solve.addEventListener("click",async e=>{
 			below a certain size.
 		*/
 		await grid.solveMaze(grid.width<=32 ? ctx : null,algorithms[elem.algorithm.value]);
-		grid.render(ctx);
+		render(grid, ctx);
 		enableInputs(true);
 	}
 	else{
 		if(!elem.canvasOverlay.innerHTML.includes("?")){
-			elem.canvasOverlay.innerHTML+="<br />?Please generate a maze first<br />Ready.<br />"
+			elem.canvasOverlay.innerHTML+="<br />?Please generate a maze first<br />Ready."
 		}
 	}
 });
