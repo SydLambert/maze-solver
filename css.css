@@ -94,7 +94,7 @@ label{
 	height: 2.4vh;
 	margin-top: 0.6vh;
 	display: block;
-	animation: caret 1s steps(2, start) infinite;
+	animation: caret 0.7s steps(2, start) infinite;
 }
 @keyframes caret{
 	to{

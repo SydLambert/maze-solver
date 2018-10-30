@@ -3,6 +3,10 @@
 	the necessary methods for generating and solving mazes with these Cells.
 */
 class Grid{
+	/*
+		The constructor creates a multidimensional array in the 'cells' property with the specified
+		width and height. It fills the array with new Cell objects to form the maze grid.
+	*/
 	constructor(width=4, height=3){
 		this.width=width;
 		this.height=height;
