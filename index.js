@@ -2,6 +2,15 @@
 	This index.js file brings Cell.js and Grid.js together. Those classes will work independently
 	from this file, however their functionality will be purely console-based. This file contains the
 	necessary code to add graphics and interactivity to the demonstration.
+
+	When developing this, I took for granted that Firefox & Chrome support all the latest JS
+	features and subsequently broke support for Microsoft Edge by using:
+		- Destructured function parameters with default value assignment
+		- Array.prototype.fill
+	I could add a polyfill for the Array.prototype.fill, but there is no way to emulate support for
+	default destructured function parameters. I really love this feature, and in my opinion Edge
+	should really be supporting it. I decided to not rework my functions because I doubt many people
+	looking at this will be using Edge.
 */
 
 /*
