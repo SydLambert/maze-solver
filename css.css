@@ -1,14 +1,25 @@
+/*
+	Removes all padding and margin from all elements and applys the commodore font
+*/
 *{
 	padding: 0px;
 	margin: 0px;
 	font-family: 'Commodore', monospace;
 }
 
+/*
+	Scales the page to take up the full size of the screen. Useful when using viewport height units
+	on mobile devices.
+*/
 html,body{
 	width: 100%;
 	height: 100%;
 }
 
+/*
+	The whole page is a flex box, this is so that items can be aligned vertically without too much
+	hassle.
+*/
 body{
 	background-color: #C8ADFF;
 	display: flex;
@@ -17,6 +28,14 @@ body{
 	flex-direction: column;
 }
 
+/*
+	The canvas container scales to cover as much of the page as possible, whilst still staying in a
+	4:3 aspect ratio. The floating point numbers have been gained from the following:
+		400/3 = 133.3
+		300/4 = 75
+	The canvas container is always in the center of the page. It is also a flexbox so that the
+	canvas itself can always be in the center of the canvas container.
+*/
 #canvasContainer{
 	width: 100vw;
 	height: 100vh;
@@ -32,13 +51,20 @@ body{
 	flex-direction: column;
 }
 
+/*
+	The canvas will resize in a 4:3 aspect ratio due to the dimensions of the canvasContainer. It
+	will fill 80% of the canvasContainer to add some padding around the edges.
+*/
 canvas{
 	width: 80%;
 	height: 80%;
 	background-color: #FFFFFF;
-	image-rendering: pixelated;
 }
 
+/*
+	The controls are below the canvas. They have a fixed height but visible overflow so they don't
+	change size with overflowing.
+*/
 #controls{
 	width: 80%;
 	height: 7vh;
@@ -47,6 +73,10 @@ canvas{
 	overflow: visible;
 }
 
+/*
+	Styling the buttons and making them larger for the user. Also applying transitions for visual
+	feedback when they are moused-over or disabled.
+*/
 input,select{
 	font-size: 3vh;
 	background-color: #FFFFFF;
@@ -64,6 +94,12 @@ input:disabled,select:disabled{
 	cursor: auto;
 }
 
+/*
+	The labels on this page are only intended for screen readers, and would make the design look
+	ugly for regular users. Screen readers disregard elements with 'display: none;' or
+	'visibility: hidden;', so this uses a set of tricks to make them invisible without setting those
+	properties.
+*/
 label{
 	border: 0;
     clip: rect(0 0 0 0);
@@ -75,6 +111,10 @@ label{
     width: 1px;
 }
 
+/*
+	The text on the canvas that instructs the user and displays an error message. It scales so that
+	the number of characters per line is consistent regardless of screen size.
+*/
 #canvasOverlay{
 	position: absolute;
 	width: 80%;
@@ -87,6 +127,10 @@ label{
 	text-transform: uppercase;
 }
 
+/*
+	This pseudo-element makes the blinky box caret symbol after the text has finished. It scales
+	based on screen size and uses the following CSS animation to blink.
+*/
 #canvasOverlay::after{
 	content: "";
 	background-color: #000000;
@@ -102,6 +146,11 @@ label{
 	}
 }
 
+/*
+	If the screen aspect ratio falls below 4:3, the fonts that scale based on screen size become
+	inaccurate. This media query converts the vw to vh and vice versa to keep the scaling
+	consistent.
+*/
 @media screen and (max-aspect-ratio: 4/3) {
 	#canvasOverlay{
 		font-size: 2.55vw;
