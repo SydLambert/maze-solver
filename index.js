@@ -85,45 +85,98 @@ const render=(grid, ctx,{
 	let cellWidth=ctx.canvas.width/grid.width;
 	let cellHeight=ctx.canvas.height/grid.height;
 
+	/*
+		This loop draws lines throughout the grid representing the links between cells. Connecting
+		all these lines with the rectangle cells drawn in the next loop creates the maze path
+		through the grid.
+	*/
 	grid.cells.flat().forEach(cell=>{
-		cell.links.forEach(link=>{
+		cell.links.forEach(link=>{ //Iterates through all the links between all the cells.
+			/*
+				The stroke style of the line is determined by whether or not the cell has been
+				mapped by the generation/solving algorithm. If it has not been mapped, it uses the
+				default foreground color specified in the options argument.
+			*/
 			ctx.strokeStyle=cell.mapped ? mappedColor : color;
-			ctx.lineWidth=cellWidth*0.5;
+			ctx.lineWidth=cellWidth*0.5; //The width of the line is half the width of the cell
 			ctx.beginPath();
+			/*
+				The path is started in the center of the current cell, and ended in the center of
+				the cell that it links to. A line is drawn for each cell that this cell links to.
+			*/
 			ctx.moveTo(
-				Math.ceil((cell.x*cellWidth)+cellWidth/2),
-				Math.ceil((cell.y*cellHeight)+cellHeight/2)
+				Math.ceil((cell.x*cellWidth)+cellWidth/2), //x
+				Math.ceil((cell.y*cellHeight)+cellHeight/2) //y
 			);
 			ctx.lineTo(
-				Math.ceil((link.x*cellWidth)+cellWidth/2),
-				Math.ceil((link.y*cellHeight)+cellHeight/2)
+				Math.ceil((link.x*cellWidth)+cellWidth/2), //x
+				Math.ceil((link.y*cellHeight)+cellHeight/2) //y
 			);
-			ctx.stroke();
+			ctx.stroke(); //The line is drawn after each iteration to ensure no gaps are left
 		});
 	});
 
+	/*
+		This loop draws all the cells on the grid. Each cell's dimensions are outlined in the
+		variables above. All cells are tiled equally to perfectly fit the canvas. The .flat() method
+		is used to easily iterate through a multidimensional array. If the 'curvy' boolean is true,
+		the cells will have notches in their corners created with the path line drawn under them
+		by the previous loop. This gives the appearance of rounded edges to paths.
+
+		The filter for the array decides whether or not to draw a full sized cell, given the user's
+		'cruvy' parameter, the cell's predefined color, and its location. Cells are always drawn if
+		they are a starting or ending cell, or if they have their own color.
+	*/
 	grid.cells.flat().filter(e=>
-		((!curvy&&e.visited)||e.color) || (curvy&&e.color)
+		(!curvy && e.visited) || //The && visited ensures the cell is only drawn in a generated maze
+		e.color ||
+		(!e.distanceTo(0,0) ||
+		!e.distanceTo(grid.width-1, grid.height-1))
 	).forEach(cell=>{
-		ctx.fillStyle=cell.color || (cell.mapped ? mappedColor : color);
-		if(!cell.distanceTo(0,0)) ctx.fillStyle=startColor;
-		if(!cell.distanceTo(grid.width-1, grid.height-1)) ctx.fillStyle=endColor;
+		/*
+			This line determines the color of the cell to be drawn. The cell's own predetermined
+			color takes presidence over all other colors, then the 'mapped' color, and finally the
+			default foreground color defined in the options argument of the render function.
+		*/
+		ctx.fillStyle=cell.color||(cell.mapped?mappedColor:color);
+		if(!cell.distanceTo(0,0)) ctx.fillStyle=startColor; //Color for start cell
+		if(!cell.distanceTo(grid.width-1,grid.height-1)) ctx.fillStyle=endColor;//Color for end cell
+		/*
+			A rectangle is created in the center of each cell, and is half the width and height of
+			that cell. This is to allow for padding around the edges for the walls of the maze.
+			The lines drawn in the previous loop will connect these cells and bridge the gap.
+		*/
 		ctx.fillRect(
-			Math.ceil(cell.x*cellWidth+(cellWidth/4)),
-			Math.ceil(cell.y*cellHeight+(cellHeight/4)),
-			Math.ceil(cellWidth/2),
-			Math.ceil(cellHeight/2)
+			Math.ceil(cell.x*cellWidth+(cellWidth/4)), //x
+			Math.ceil(cell.y*cellHeight+(cellHeight/4)), //y
+			Math.ceil(cellWidth/2), //Rectangle width
+			Math.ceil(cellHeight/2) //Rectangle height
 		);
 	});
 
-	ctx.strokeStyle=pathColor;
-	ctx.lineWidth=cellWidth*0.25;
+	/*
+		This code draws the final solution line of the maze. This line is drawn on top of all other
+		graphics. It is drawn with a recursive function working from the ending cell to the starting
+		cell.
+	*/
+	ctx.strokeStyle=pathColor; //The color of the solution path specified in the options argument
+	ctx.lineWidth=cellWidth*0.25; //A quarter of the cell width, therefore half of the path width
+	/*
+		The line's path is started and moved to the center of the ending cell, which is in the
+		bottom-right of the grid. Is is the last element in the multidimensional cells array for
+		the Grid object.
+	*/
 	ctx.beginPath();
 	ctx.moveTo(
-		Math.ceil(((grid.width-1)*cellWidth)+cellWidth/2),
-		Math.ceil(((grid.height-1)*cellHeight)+cellHeight/2)
+		Math.ceil(((grid.width-1)*cellWidth)+cellWidth/2), //x
+		Math.ceil(((grid.height-1)*cellHeight)+cellHeight/2) //y
 	);
 
+	/*
+		The recursive 'lineParents' function is started on the ending cell, and draws a line through
+		all the parents of all the cells until it reaches the starting cell. This creates the final
+		solution line that shows the output of the maze solver.
+	*/
 	grid.cells[grid.width-1][grid.height-1].lineParents(ctx, cellWidth, cellHeight);
 	ctx.stroke();
 };
