@@ -2,15 +2,6 @@
 	This index.js file brings Cell.js and Grid.js together. Those classes will work independently
 	from this file, however their functionality will be purely console-based. This file contains the
 	necessary code to add graphics and interactivity to the demonstration.
-
-	When developing this, I took for granted that Firefox & Chrome support all the latest JS
-	features and subsequently broke support for Microsoft Edge by using:
-		- Destructured function parameters with default value assignment
-		- Array.prototype.fill
-	I could add a polyfill for the Array.prototype.fill, but there is no way to emulate support for
-	default destructured function parameters. I really love this feature, and in my opinion Edge
-	should really be supporting it. I decided to not rework my functions because I doubt many people
-	looking at this will be using Edge.
 */
 
 /*
@@ -99,7 +90,7 @@ const render=(grid, ctx,{
 		all these lines with the rectangle cells drawn in the next loop creates the maze path
 		through the grid.
 	*/
-	grid.cells.flat().forEach(cell=>{
+	grid.cells.forEach(line=>line.forEach(cell=>{
 		cell.links.forEach(link=>{ //Iterates through all the links between all the cells.
 			/*
 				The stroke style of the line is determined by whether or not the cell has been
@@ -123,20 +114,19 @@ const render=(grid, ctx,{
 			);
 			ctx.stroke(); //The line is drawn after each iteration to ensure no gaps are left
 		});
-	});
+	}));
 
 	/*
 		This loop draws all the cells on the grid. Each cell's dimensions are outlined in the
-		variables above. All cells are tiled equally to perfectly fit the canvas. The .flat() method
-		is used to easily iterate through a multidimensional array. If the 'curvy' boolean is true,
-		the cells will have notches in their corners created with the path line drawn under them
-		by the previous loop. This gives the appearance of rounded edges to paths.
+		variables above. All cells are tiled equally to perfectly fit the canvas. If the 'curvy'
+		boolean is true, the cells will have notches in their corners created with the path line
+		drawn under them by the previous loop. This gives the appearance of rounded edges to paths.
 
 		The filter for the array decides whether or not to draw a full sized cell, given the user's
 		'cruvy' parameter, the cell's predefined color, and its location. Cells are always drawn if
 		they are a starting or ending cell, or if they have their own color.
 	*/
-	grid.cells.flat().filter(e=>
+	grid.cells.forEach(line=>line.filter(e=>
 		(!curvy && e.visited) || //The && visited ensures the cell is only drawn in a generated maze
 		e.color ||
 		(!e.distanceTo(0,0) ||
@@ -161,7 +151,7 @@ const render=(grid, ctx,{
 			Math.ceil(cellWidth/2), //Rectangle width
 			Math.ceil(cellHeight/2) //Rectangle height
 		);
-	});
+	}));
 
 	/*
 		This code draws the final solution line of the maze. This line is drawn on top of all other
@@ -247,20 +237,19 @@ elem.generate.addEventListener("click",async e=>{
 	checks that the user has generated a maze, and issues a warning if they haven't. Then, like the
 	'generate' button, the user's controls are disabled & re-enabled once the task has completed.
 	Before the solving algorithm starts, all the solving metadata in the cells is set to default
-	so that any previous attempts at a solution don't interfere with the current attempt. The
-	'.flat()' method is used as a quick way to iterate through all elements in a multidimensional
-	array. The solving algorithm specified by the user is passed into the maze solver in the form
-	of an object literal detailing alterations to be made to the core algorithm.
+	so that any previous attempts at a solution don't interfere with the current attempt.The solving
+	algorithm specified by the user is passed into the maze solver in the form of an object literal
+	detailing alterations to be made to the core algorithm.
 */
 elem.solve.addEventListener("click",async e=>{
 	if(grid){
 		enableInputs(false);
-		grid.cells.flat().forEach(cell=>{
+		grid.cells.forEach(line=>line.forEach(cell=>{
 			cell.globalGoal=Infinity;
 			cell.localGoal=Infinity;
 			cell.parent=null;
 			cell.mapped=false;
-		});
+		}));
 		/*
 			Again, like the maze generator, a rendering context is only supplied when the grid is
 			below a certain size.

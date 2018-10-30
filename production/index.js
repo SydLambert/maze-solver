@@ -33,7 +33,7 @@ const render=(grid, ctx,{
 	let cellWidth=ctx.canvas.width/grid.width;
 	let cellHeight=ctx.canvas.height/grid.height;
 
-	grid.cells.flat().forEach(cell=>{
+	grid.cells.forEach(line=>line.forEach(cell=>{
 		cell.links.forEach(link=>{
 			ctx.strokeStyle=cell.mapped ? mappedColor : color;
 			ctx.lineWidth=cellWidth*0.5;
@@ -48,9 +48,9 @@ const render=(grid, ctx,{
 			);
 			ctx.stroke();
 		});
-	});
+	}));
 
-	grid.cells.flat().filter(e=>
+	grid.cells.forEach(line=>line.filter(e=>
 		(!curvy && e.visited) ||
 		e.color ||
 		(!e.distanceTo(0,0) ||
@@ -65,7 +65,7 @@ const render=(grid, ctx,{
 			Math.ceil(cellWidth/2),
 			Math.ceil(cellHeight/2)
 		);
-	});
+	}));
 
 	ctx.strokeStyle=pathColor;
 	ctx.lineWidth=cellWidth*0.25;
@@ -102,12 +102,12 @@ elem.generate.addEventListener("click",async e=>{
 elem.solve.addEventListener("click",async e=>{
 	if(grid){
 		enableInputs(false);
-		grid.cells.flat().forEach(cell=>{
+		grid.cells.forEach(line=>line.forEach(cell=>{
 			cell.globalGoal=Infinity;
 			cell.localGoal=Infinity;
 			cell.parent=null;
 			cell.mapped=false;
-		});
+		}));
 		await grid.solveMaze(grid.width<=32 ? ctx : null,algorithms[elem.algorithm.value]);
 		render(grid, ctx);
 		enableInputs(true);
