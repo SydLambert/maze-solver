@@ -147,6 +147,20 @@ label{
 }
 
 /*
+	The download link for the source code.
+*/
+#download{
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	color: #FFFFFF;
+	text-shadow: #000000 0.13vw 0.13vw 0px;
+	font-size: 1.3vw;
+	text-transform: uppercase;
+	text-align: right;
+}
+
+/*
 	If the screen aspect ratio falls below 4:3, the fonts that scale based on screen size become
 	inaccurate. This media query converts the vw to vh and vice versa to keep the scaling
 	consistent.
@@ -161,5 +175,9 @@ label{
 		width: 1.8vw;
 		height: 1.8vw;
 		margin-top: 0.4vw;
+	}
+	#download{
+		font-size: 1.9vh;
+		text-shadow: #000000 0.19vh 0.19vh 0px;
 	}
 }
