@@ -125,6 +125,7 @@ label{
 	font-size: 3.4vh;
 	box-sizing: border-box;
 	text-transform: uppercase;
+	pointer-events: none;
 }
 
 /*
